@@ -649,6 +649,30 @@ struct IMGUI_API ImChunkStream
 
 };
 
+
+// Data for resizing from corner
+struct ImGuiResizeGripDef
+{
+    ImVec2  CornerPosN;
+    ImVec2  InnerDir;
+    int     AngleMin12, AngleMax12;
+};
+// static const ImGuiResizeGripDef resize_grip_def[4] =
+// {
+//     { ImVec2(1, 1), ImVec2(-1, -1), 0, 3 },  // Lower-right
+//     { ImVec2(0, 1), ImVec2(+1, -1), 3, 6 },  // Lower-left
+//     { ImVec2(0, 0), ImVec2(+1, +1), 6, 9 },  // Upper-left (Unused)
+//     { ImVec2(1, 0), ImVec2(-1, +1), 9, 12 }  // Upper-right (Unused)
+// };
+
+// Data for resizing from borders
+struct ImGuiResizeBorderDef
+{
+    ImVec2 InnerDir;
+    ImVec2 SegmentN1, SegmentN2;
+    float  OuterAngle;
+};
+
 //-----------------------------------------------------------------------------
 // [SECTION] ImDrawList support
 //-----------------------------------------------------------------------------

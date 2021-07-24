@@ -27,9 +27,34 @@ namespace ImGui
 // SetAllocatorFunctions()
 //   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for
 //   details.
+
+/**
+ * Create a Context object
+ * 
+ * @param shared_font_atlas 
+ * @return ImGuiContext * 
+ */
 IMGUI_API ImGuiContext *CreateContext(ImFontAtlas *shared_font_atlas = NULL);
+
+/**
+ * 
+ * 
+ * @param ctx 
+ */
 IMGUI_API void DestroyContext(ImGuiContext *ctx = NULL); // NULL = destroy current context
+
+/**
+ * Get the Current Context object
+ * 
+ * @return IMGUI_API* 
+ */
 IMGUI_API ImGuiContext *GetCurrentContext();
+
+/**
+ * Set the Current Context object
+ * 
+ * @param ctx 
+ */
 IMGUI_API void SetCurrentContext(ImGuiContext *ctx);
 
 // Main
@@ -86,6 +111,10 @@ IMGUI_API const char *GetVersion(); // get the compiled version string e.g. "1.8
 //    returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 // - Note that the bottom of window stack always contains a window called "Debug".
 IMGUI_API bool Begin(const char *name, bool *p_open = NULL, ImGuiWindowFlags flags = 0);
+
+/**
+ * 
+ */
 IMGUI_API void End();
 
 // Child Windows
