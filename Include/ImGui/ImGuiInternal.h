@@ -2713,4 +2713,51 @@ extern void         ImGuiTestEngineHook_Log(ImGuiContext* ctx, const char* fmt, 
 #pragma warning (pop)
 #endif
 
+
+//
+namespace ImGui
+{
+// Navigation
+ void NavUpdate();
+ void NavUpdateWindowing();
+ void NavUpdateWindowingOverlay();
+ void NavUpdateMoveResult();
+ void NavUpdateInitResult();
+ float NavUpdatePageUpPageDown();
+ inline void NavUpdateAnyRequestFlag();
+ void NavEndFrame();
+ bool NavScoreItem(ImGuiNavItemData *result, ImRect cand);
+ void NavApplyItemToResult(ImGuiNavItemData *result, ImGuiWindow *window, ImGuiID id, const ImRect &nav_bb_rel);
+ void NavProcessItem(ImGuiWindow *window, const ImRect &nav_bb, ImGuiID id);
+ ImVec2 NavCalcPreferredRefPos();
+ void NavSaveLastChildNavWindowIntoParent(ImGuiWindow *nav_window);
+ ImGuiWindow *NavRestoreLastChildNavWindow(ImGuiWindow *window);
+ void NavRestoreLayer(ImGuiNavLayer layer);
+ int FindWindowFocusIndex(ImGuiWindow *window);
+
+// Error Checking
+ void ErrorCheckNewFrameSanityChecks();
+ void ErrorCheckEndFrameSanityChecks();
+
+// Misc
+ void UpdateSettings();
+ void UpdateMouseInputs();
+ void UpdateMouseWheel();
+ void UpdateTabFocus();
+ void UpdateDebugToolItemPicker();
+ bool UpdateWindowManualResize(ImGuiWindow *window, const ImVec2 &size_auto_fit, int *border_held,
+                               int resize_grip_count, ImU32 resize_grip_col[4], const ImRect &visibility_rect);
+ void RenderWindowOuterBorders(ImGuiWindow *window);
+ void RenderWindowDecorations(ImGuiWindow *window, const ImRect &title_bar_rect, bool title_bar_is_highlight,
+                              int resize_grip_count, const ImU32 resize_grip_col[4], float resize_grip_draw_size);
+ void RenderWindowTitleBarContents(ImGuiWindow *window, const ImRect &title_bar_rect, const char *name,
+                                   bool *p_open);
+
+// Viewports
+ void UpdateViewportsNewFrame();
+
+} // namespace ImGui
+
+
+
 #endif // #ifndef IMGUI_DISABLE
