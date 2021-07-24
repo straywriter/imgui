@@ -49,7 +49,6 @@ Index of this file:
 
 #include <ImGui/ImGuiConfig.h>
 
-#ifndef IMGUI_DISABLE
 
 //-----------------------------------------------------------------------------
 // [SECTION] Header mess
@@ -165,4 +164,3 @@ enum ImDrawCornerFlags_
 #include "imgui_user.h"
 #endif
 
-#endif // #ifndef IMGUI_DISABLE
