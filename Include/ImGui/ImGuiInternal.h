@@ -36,7 +36,8 @@ Index of this file:
 */
 
 #pragma once
-#ifndef IMGUI_DISABLE
+
+/*
 
 //-----------------------------------------------------------------------------
 // [SECTION] Header mess
@@ -2759,5 +2760,4 @@ namespace ImGui
 } // namespace ImGui
 
 
-
-#endif // #ifndef IMGUI_DISABLE
+*/
