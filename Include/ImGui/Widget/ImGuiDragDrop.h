@@ -33,6 +33,9 @@ IMGUI_API void EndDragDropTarget(); // only call EndDragDropTarget() if BeginDra
 IMGUI_API const ImGuiPayload *GetDragDropPayload(); // peek directly into the current payload from anywhere. may return
                                                     // NULL. use ImGuiPayload::IsDataType() to test for the payload
                                                     // type.
+// template <typename T, typename SIGNED_T, typename FLOAT_T>
+// IMGUI_API bool DragBehaviorT(ImGuiDataType data_type, T *v, float v_speed, T v_min, T v_max, const char *format,
+//                              ImGuiSliderFlags flags);
 
 
 } // namespace ImGui

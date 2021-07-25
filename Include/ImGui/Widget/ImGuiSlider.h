@@ -7,6 +7,10 @@ namespace ImGui
 {
 
 
+template <typename T, typename SIGNED_T, typename FLOAT_T>
+IMGUI_API bool DragBehaviorT(ImGuiDataType data_type, T *v, float v_speed, T v_min, T v_max, const char *format,
+                             ImGuiSliderFlags flags);
+
 // Widgets: Drag Sliders
 // - CTRL+Click on any drag box to turn them into an input box. Manually input values aren't clamped and can go
 // off-bounds.

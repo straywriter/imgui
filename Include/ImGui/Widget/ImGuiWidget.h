@@ -35,3 +35,7 @@
 #include <ImGui/Widget/ImGuiViewport.h>
 
 #include <ImGui/Widget/ImGuiTabBar.h>
+
+#include <ImGui/Widget/ImGuiDataPlotting.h>
+
+#include <ImGui/Widget/ImGuiScrollbar.h>

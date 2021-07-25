@@ -2,7 +2,7 @@
 #include <ImGui/ImGuiEnum.h>
 #include <ImGui/Widget/ImGuiButton.h>
 
-#include <imgui.h>
+#include <ImGui/ImGui.h>
 
 #include <ImGui/ImGuiInternal.h>
 
@@ -546,6 +546,94 @@ bool ImGui::ButtonBehavior(const ImRect& bb, ImGuiID id, bool* out_hovered, bool
 
     if (out_hovered) *out_hovered = hovered;
     if (out_held) *out_held = held;
+
+    return pressed;
+}
+
+
+// A little color square. Return true when clicked.
+// FIXME: May want to display/ignore the alpha component in the color display? Yet show it in the tooltip.
+// 'desc_id' is not called 'label' because we don't display it next to the button, but only in the tooltip.
+// Note that 'col' may be encoded in HSV if ImGuiColorEditFlags_InputHSV is set.
+bool ImGui::ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags, ImVec2 size)
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImGuiContext& g = *GImGui;
+    const ImGuiID id = window->GetID(desc_id);
+    float default_size = GetFrameHeight();
+    if (size.x == 0.0f)
+        size.x = default_size;
+    if (size.y == 0.0f)
+        size.y = default_size;
+    const ImRect bb(window->DC.CursorPos, window->DC.CursorPos + size);
+    ItemSize(bb, (size.y >= default_size) ? g.Style.FramePadding.y : 0.0f);
+    if (!ItemAdd(bb, id))
+        return false;
+
+    bool hovered, held;
+    bool pressed = ButtonBehavior(bb, id, &hovered, &held);
+
+    if (flags & ImGuiColorEditFlags_NoAlpha)
+        flags &= ~(ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf);
+
+    ImVec4 col_rgb = col;
+    if (flags & ImGuiColorEditFlags_InputHSV)
+        ColorConvertHSVtoRGB(col_rgb.x, col_rgb.y, col_rgb.z, col_rgb.x, col_rgb.y, col_rgb.z);
+
+    ImVec4 col_rgb_without_alpha(col_rgb.x, col_rgb.y, col_rgb.z, 1.0f);
+    float grid_step = ImMin(size.x, size.y) / 2.99f;
+    float rounding = ImMin(g.Style.FrameRounding, grid_step * 0.5f);
+    ImRect bb_inner = bb;
+    float off = 0.0f;
+    if ((flags & ImGuiColorEditFlags_NoBorder) == 0)
+    {
+        off = -0.75f; // The border (using Col_FrameBg) tends to look off when color is near-opaque and rounding is enabled. This offset seemed like a good middle ground to reduce those artifacts.
+        bb_inner.Expand(off);
+    }
+    if ((flags & ImGuiColorEditFlags_AlphaPreviewHalf) && col_rgb.w < 1.0f)
+    {
+        float mid_x = IM_ROUND((bb_inner.Min.x + bb_inner.Max.x) * 0.5f);
+        RenderColorRectWithAlphaCheckerboard(window->DrawList, ImVec2(bb_inner.Min.x + grid_step, bb_inner.Min.y), bb_inner.Max, GetColorU32(col_rgb), grid_step, ImVec2(-grid_step + off, off), rounding, ImDrawFlags_RoundCornersRight);
+        window->DrawList->AddRectFilled(bb_inner.Min, ImVec2(mid_x, bb_inner.Max.y), GetColorU32(col_rgb_without_alpha), rounding, ImDrawFlags_RoundCornersLeft);
+    }
+    else
+    {
+        // Because GetColorU32() multiplies by the global style Alpha and we don't want to display a checkerboard if the source code had no alpha
+        ImVec4 col_source = (flags & ImGuiColorEditFlags_AlphaPreview) ? col_rgb : col_rgb_without_alpha;
+        if (col_source.w < 1.0f)
+            RenderColorRectWithAlphaCheckerboard(window->DrawList, bb_inner.Min, bb_inner.Max, GetColorU32(col_source), grid_step, ImVec2(off, off), rounding);
+        else
+            window->DrawList->AddRectFilled(bb_inner.Min, bb_inner.Max, GetColorU32(col_source), rounding);
+    }
+    RenderNavHighlight(bb, id);
+    if ((flags & ImGuiColorEditFlags_NoBorder) == 0)
+    {
+        if (g.Style.FrameBorderSize > 0.0f)
+            RenderFrameBorder(bb.Min, bb.Max, rounding);
+        else
+            window->DrawList->AddRect(bb.Min, bb.Max, GetColorU32(ImGuiCol_FrameBg), rounding); // Color button are often in need of some sort of border
+    }
+
+    // Drag and Drop Source
+    // NB: The ActiveId test is merely an optional micro-optimization, BeginDragDropSource() does the same test.
+    if (g.ActiveId == id && !(flags & ImGuiColorEditFlags_NoDragDrop) && BeginDragDropSource())
+    {
+        if (flags & ImGuiColorEditFlags_NoAlpha)
+            SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F, &col_rgb, sizeof(float) * 3, ImGuiCond_Once);
+        else
+            SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F, &col_rgb, sizeof(float) * 4, ImGuiCond_Once);
+        ColorButton(desc_id, col, flags);
+        SameLine();
+        TextEx("Color");
+        EndDragDropSource();
+    }
+
+    // Tooltip
+    if (!(flags & ImGuiColorEditFlags_NoTooltip) && hovered)
+        ColorTooltip(desc_id, &col.x, flags & (ImGuiColorEditFlags__InputMask | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf));
 
     return pressed;
 }

@@ -37,6 +37,11 @@ IMGUI_API bool ImageButton(ImTextureID user_texture_id, const ImVec2 &size, cons
                            const ImVec4 &bg_col = ImVec4(0, 0, 0, 0), const ImVec4 &tint_col = ImVec4(1, 1, 1, 1));
 // <0 frame_padding uses default frame padding settings. 0 for no padding
 
+IMGUI_API bool ColorButton(
+    const char *desc_id, const ImVec4 &col, ImGuiColorEditFlags flags = 0,
+    ImVec2 size = ImVec2(0, 0)); // display a color square/button, hover for details, return true when pressed.
+
+
 IMGUI_API bool ButtonBehavior(const ImRect &bb, ImGuiID id, bool *out_hovered, bool *out_held,
                               ImGuiButtonFlags flags = 0);
 
