@@ -253,37 +253,37 @@ struct ImFont
     IMGUI_API bool              IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last);
 };
 
-//-----------------------------------------------------------------------------
-// [SECTION] Viewports
-//-----------------------------------------------------------------------------
+// //-----------------------------------------------------------------------------
+// // [SECTION] Viewports
+// //-----------------------------------------------------------------------------
 
-// Flags stored in ImGuiViewport::Flags
-enum ImGuiViewportFlags_
-{
-    ImGuiViewportFlags_None                     = 0,
-    ImGuiViewportFlags_IsPlatformWindow         = 1 << 0,   // Represent a Platform Window
-    ImGuiViewportFlags_IsPlatformMonitor        = 1 << 1,   // Represent a Platform Monitor (unused yet)
-    ImGuiViewportFlags_OwnedByApp               = 1 << 2    // Platform Window: is created/managed by the application (rather than a dear imgui backend)
-};
+// // Flags stored in ImGuiViewport::Flags
+// enum ImGuiViewportFlags_
+// {
+//     ImGuiViewportFlags_None                     = 0,
+//     ImGuiViewportFlags_IsPlatformWindow         = 1 << 0,   // Represent a Platform Window
+//     ImGuiViewportFlags_IsPlatformMonitor        = 1 << 1,   // Represent a Platform Monitor (unused yet)
+//     ImGuiViewportFlags_OwnedByApp               = 1 << 2    // Platform Window: is created/managed by the application (rather than a dear imgui backend)
+// };
 
-// - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
-// - In 'docking' branch with multi-viewport enabled, we extend this concept to have multiple active viewports.
-// - In the future we will extend this concept further to also represent Platform Monitor and support a "no main platform window" operation mode.
-// - About Main Area vs Work Area:
-//   - Main Area = entire viewport.
-//   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).
-//   - Windows are generally trying to stay within the Work Area of their host viewport.
-struct ImGuiViewport
-{
-    ImGuiViewportFlags  Flags;                  // See ImGuiViewportFlags_
-    ImVec2              Pos;                    // Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)
-    ImVec2              Size;                   // Main Area: Size of the viewport.
-    ImVec2              WorkPos;                // Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)
-    ImVec2              WorkSize;               // Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)
+// // - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
+// // - In 'docking' branch with multi-viewport enabled, we extend this concept to have multiple active viewports.
+// // - In the future we will extend this concept further to also represent Platform Monitor and support a "no main platform window" operation mode.
+// // - About Main Area vs Work Area:
+// //   - Main Area = entire viewport.
+// //   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).
+// //   - Windows are generally trying to stay within the Work Area of their host viewport.
+// struct ImGuiViewport
+// {
+//     ImGuiViewportFlags  Flags;                  // See ImGuiViewportFlags_
+//     ImVec2              Pos;                    // Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)
+//     ImVec2              Size;                   // Main Area: Size of the viewport.
+//     ImVec2              WorkPos;                // Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)
+//     ImVec2              WorkSize;               // Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)
 
-    ImGuiViewport()     { memset(this, 0, sizeof(*this)); }
+//     ImGuiViewport()     { memset(this, 0, sizeof(*this)); }
 
-    // Helpers
-    ImVec2              GetCenter() const       { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }
-    ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }
-};
+//     // Helpers
+//     ImVec2              GetCenter() const       { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }
+//     ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }
+// };

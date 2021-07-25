@@ -2714,6 +2714,7 @@ extern void         ImGuiTestEngineHook_Log(ImGuiContext* ctx, const char* fmt, 
 #pragma warning (pop)
 #endif
 
+*/
 
 //
 namespace ImGui
@@ -2760,4 +2761,3 @@ namespace ImGui
 } // namespace ImGui
 
 
-*/

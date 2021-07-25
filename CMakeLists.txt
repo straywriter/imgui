@@ -6,8 +6,8 @@ project(ImGui)
 add_subdirectory(External)
 
 # ImGui
-file(GLOB ImGuiHeaderFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/ImGui/*.h)
-file(GLOB ImGuiSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/ImGui/*.cpp)
+file(GLOB_RECURSE  ImGuiHeaderFile ${CMAKE_CURRENT_SOURCE_DIR}/Include/ImGui/*.h)
+file(GLOB_RECURSE  ImGuiSourceFile ${CMAKE_CURRENT_SOURCE_DIR}/Src/ImGui/*.cpp)
 
 message(${ImGuiHeaderFile})
 message(${ImGuiSourceFile})

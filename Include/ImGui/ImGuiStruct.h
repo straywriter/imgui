@@ -105,3 +105,82 @@ struct ImGuiTableSortSpecs
 
     ImGuiTableSortSpecs()       { memset(this, 0, sizeof(*this)); }
 };
+
+
+//-----------------------------------------------------------------------------
+// [SECTION] Metrics, Debug
+//-----------------------------------------------------------------------------
+
+struct ImGuiMetricsConfig
+{
+    bool        ShowWindowsRects;
+    bool        ShowWindowsBeginOrder;
+    bool        ShowTablesRects;
+    bool        ShowDrawCmdMesh;
+    bool        ShowDrawCmdBoundingBoxes;
+    int         ShowWindowsRectsType;
+    int         ShowTablesRectsType;
+
+    ImGuiMetricsConfig()
+    {
+        ShowWindowsRects = false;
+        ShowWindowsBeginOrder = false;
+        ShowTablesRects = false;
+        ShowDrawCmdMesh = true;
+        ShowDrawCmdBoundingBoxes = true;
+        ShowWindowsRectsType = -1;
+        ShowTablesRectsType = -1;
+    }
+};
+
+
+//-----------------------------------------------------------------------------
+// [SECTION] Settings support
+//-----------------------------------------------------------------------------
+
+// Windows data saved in imgui.ini file
+// Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.
+// (this is designed to be stored in a ImChunkStream buffer, with the variable-length Name following our structure)
+struct ImGuiWindowSettings
+{
+    ImGuiID     ID;
+    ImVec2ih    Pos;
+    ImVec2ih    Size;
+    bool        Collapsed;
+    bool        WantApply;      // Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)
+
+    ImGuiWindowSettings()       { memset(this, 0, sizeof(*this)); }
+    char* GetName()             { return (char*)(this + 1); }
+};
+
+struct ImGuiSettingsHandler
+{
+    const char* TypeName;       // Short description stored in .ini file. Disallowed characters: '[' ']'
+    ImGuiID     TypeHash;       // == ImHashStr(TypeName)
+    void        (*ClearAllFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler);                                // Clear all settings data
+    void        (*ReadInitFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler);                                // Read: Called before reading (in registration order)
+    void*       (*ReadOpenFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler, const char* name);              // Read: Called when entering into a new ini entry e.g. "[Window][Name]"
+    void        (*ReadLineFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler, void* entry, const char* line); // Read: Called for every line of text within an ini entry
+    void        (*ApplyAllFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler);                                // Read: Called after reading (in registration order)
+    void        (*WriteAllFn)(ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuffer* out_buf);      // Write: Output every entries into 'out_buf'
+    void*       UserData;
+
+    ImGuiSettingsHandler() { memset(this, 0, sizeof(*this)); }
+};
+
+
+struct IMGUI_API ImGuiStackSizes
+{
+    short   SizeOfIDStack;
+    short   SizeOfColorStack;
+    short   SizeOfStyleVarStack;
+    short   SizeOfFontStack;
+    short   SizeOfFocusScopeStack;
+    short   SizeOfGroupStack;
+    short   SizeOfBeginPopupStack;
+
+    ImGuiStackSizes() { memset(this, 0, sizeof(*this)); }
+    void SetToCurrentState();
+    void CompareWithCurrentState();
+};
+
