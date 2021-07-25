@@ -33,3 +33,5 @@
 #include <ImGui/Widget/ImGuiDragDrop.h>
 
 #include <ImGui/Widget/ImGuiViewport.h>
+
+#include <ImGui/Widget/ImGuiTabBar.h>
