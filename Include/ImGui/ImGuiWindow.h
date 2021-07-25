@@ -83,6 +83,15 @@ IMGUI_API void SetWindowCollapsed(const char *name, bool collapsed,
                                   ImGuiCond cond = 0); // set named window collapsed state
 IMGUI_API void SetWindowFocus(const char *name); // set named window to be focused / top-most. use NULL to remove focus.
 
+
+// Scrolling
+IMGUI_API void SetNextWindowScroll(const ImVec2 &scroll); // Use -1.0f on one axis to leave as-is
+
+
+
+IMGUI_API ImRect GetWindowScrollbarRect(ImGuiWindow *window, ImGuiAxis axis);
+
+IMGUI_API ImGuiID GetWindowScrollbarID(ImGuiWindow *window, ImGuiAxis axis);
 } // namespace ImGui
 
 

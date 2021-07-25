@@ -40,6 +40,8 @@ Index of this file:
 
 #include <ImGui/ImGuiType.h>
 
+
+#include <ImGui/ImGuiStb.h>
 //
 namespace ImGui
 {
@@ -227,6 +229,7 @@ IMGUI_API float CalcWrapWidthForPos(const ImVec2 &pos, float wrap_pos_x);
 IMGUI_API void PushMultiItemsWidths(int components, float width_full);
 IMGUI_API void PushItemFlag(ImGuiItemFlags option, bool enabled);
 IMGUI_API void PopItemFlag();
+
 IMGUI_API bool IsItemToggledSelection(); // Was the last item selection toggled? (after Selectable(), TreeNode() etc. We
                                          // only returns toggle _event_ in order to handle clipping correctly)
 IMGUI_API ImVec2 GetContentRegionMaxAbs();
@@ -379,52 +382,52 @@ IMGUI_API float TableGetHeaderRowHeight();
 IMGUI_API void TablePushBackgroundChannel();
 IMGUI_API void TablePopBackgroundChannel();
 
-// Tables: Internals
-inline ImGuiTable *GetCurrentTable()
-{
-    ImGuiContext &g = *GImGui;
-    return g.CurrentTable;
-}
-IMGUI_API ImGuiTable *TableFindByID(ImGuiID id);
-IMGUI_API bool BeginTableEx(const char *name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0,
-                            const ImVec2 &outer_size = ImVec2(0, 0), float inner_width = 0.0f);
-IMGUI_API void TableBeginInitMemory(ImGuiTable *table, int columns_count);
-IMGUI_API void TableBeginApplyRequests(ImGuiTable *table);
-IMGUI_API void TableSetupDrawChannels(ImGuiTable *table);
-IMGUI_API void TableUpdateLayout(ImGuiTable *table);
-IMGUI_API void TableUpdateBorders(ImGuiTable *table);
-IMGUI_API void TableUpdateColumnsWeightFromWidth(ImGuiTable *table);
-IMGUI_API void TableDrawBorders(ImGuiTable *table);
-IMGUI_API void TableDrawContextMenu(ImGuiTable *table);
-IMGUI_API void TableMergeDrawChannels(ImGuiTable *table);
-IMGUI_API void TableSortSpecsSanitize(ImGuiTable *table);
-IMGUI_API void TableSortSpecsBuild(ImGuiTable *table);
-IMGUI_API ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn *column);
-IMGUI_API void TableFixColumnSortDirection(ImGuiTable *table, ImGuiTableColumn *column);
-IMGUI_API float TableGetColumnWidthAuto(ImGuiTable *table, ImGuiTableColumn *column);
-IMGUI_API void TableBeginRow(ImGuiTable *table);
-IMGUI_API void TableEndRow(ImGuiTable *table);
-IMGUI_API void TableBeginCell(ImGuiTable *table, int column_n);
-IMGUI_API void TableEndCell(ImGuiTable *table);
-IMGUI_API ImRect TableGetCellBgRect(const ImGuiTable *table, int column_n);
-IMGUI_API const char *TableGetColumnName(const ImGuiTable *table, int column_n);
-IMGUI_API ImGuiID TableGetColumnResizeID(const ImGuiTable *table, int column_n, int instance_no = 0);
-IMGUI_API float TableGetMaxColumnWidth(const ImGuiTable *table, int column_n);
-IMGUI_API void TableSetColumnWidthAutoSingle(ImGuiTable *table, int column_n);
-IMGUI_API void TableSetColumnWidthAutoAll(ImGuiTable *table);
-IMGUI_API void TableRemove(ImGuiTable *table);
-IMGUI_API void TableGcCompactTransientBuffers(ImGuiTable *table);
-IMGUI_API void TableGcCompactTransientBuffers(ImGuiTableTempData *table);
-IMGUI_API void TableGcCompactSettings();
+// // Tables: Internals
+// inline ImGuiTable *GetCurrentTable()
+// {
+//     ImGuiContext &g = *GImGui;
+//     return g.CurrentTable;
+// }
+// IMGUI_API ImGuiTable *TableFindByID(ImGuiID id);
+// IMGUI_API bool BeginTableEx(const char *name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0,
+//                             const ImVec2 &outer_size = ImVec2(0, 0), float inner_width = 0.0f);
+// IMGUI_API void TableBeginInitMemory(ImGuiTable *table, int columns_count);
+// IMGUI_API void TableBeginApplyRequests(ImGuiTable *table);
+// IMGUI_API void TableSetupDrawChannels(ImGuiTable *table);
+// IMGUI_API void TableUpdateLayout(ImGuiTable *table);
+// IMGUI_API void TableUpdateBorders(ImGuiTable *table);
+// IMGUI_API void TableUpdateColumnsWeightFromWidth(ImGuiTable *table);
+// IMGUI_API void TableDrawBorders(ImGuiTable *table);
+// IMGUI_API void TableDrawContextMenu(ImGuiTable *table);
+// IMGUI_API void TableMergeDrawChannels(ImGuiTable *table);
+// IMGUI_API void TableSortSpecsSanitize(ImGuiTable *table);
+// IMGUI_API void TableSortSpecsBuild(ImGuiTable *table);
+// IMGUI_API ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn *column);
+// IMGUI_API void TableFixColumnSortDirection(ImGuiTable *table, ImGuiTableColumn *column);
+// IMGUI_API float TableGetColumnWidthAuto(ImGuiTable *table, ImGuiTableColumn *column);
+// IMGUI_API void TableBeginRow(ImGuiTable *table);
+// IMGUI_API void TableEndRow(ImGuiTable *table);
+// IMGUI_API void TableBeginCell(ImGuiTable *table, int column_n);
+// IMGUI_API void TableEndCell(ImGuiTable *table);
+// IMGUI_API ImRect TableGetCellBgRect(const ImGuiTable *table, int column_n);
+// IMGUI_API const char *TableGetColumnName(const ImGuiTable *table, int column_n);
+// IMGUI_API ImGuiID TableGetColumnResizeID(const ImGuiTable *table, int column_n, int instance_no = 0);
+// IMGUI_API float TableGetMaxColumnWidth(const ImGuiTable *table, int column_n);
+// IMGUI_API void TableSetColumnWidthAutoSingle(ImGuiTable *table, int column_n);
+// IMGUI_API void TableSetColumnWidthAutoAll(ImGuiTable *table);
+// IMGUI_API void TableRemove(ImGuiTable *table);
+// IMGUI_API void TableGcCompactTransientBuffers(ImGuiTable *table);
+// IMGUI_API void TableGcCompactTransientBuffers(ImGuiTableTempData *table);
+// IMGUI_API void TableGcCompactSettings();
 
-// Tables: Settings
-IMGUI_API void TableLoadSettings(ImGuiTable *table);
-IMGUI_API void TableSaveSettings(ImGuiTable *table);
-IMGUI_API void TableResetSettings(ImGuiTable *table);
-IMGUI_API ImGuiTableSettings *TableGetBoundSettings(ImGuiTable *table);
-IMGUI_API void TableSettingsInstallHandler(ImGuiContext *context);
-IMGUI_API ImGuiTableSettings *TableSettingsCreate(ImGuiID id, int columns_count);
-IMGUI_API ImGuiTableSettings *TableSettingsFindByID(ImGuiID id);
+// // Tables: Settings
+// IMGUI_API void TableLoadSettings(ImGuiTable *table);
+// IMGUI_API void TableSaveSettings(ImGuiTable *table);
+// IMGUI_API void TableResetSettings(ImGuiTable *table);
+// IMGUI_API ImGuiTableSettings *TableGetBoundSettings(ImGuiTable *table);
+// IMGUI_API void TableSettingsInstallHandler(ImGuiContext *context);
+// IMGUI_API ImGuiTableSettings *TableSettingsCreate(ImGuiID id, int columns_count);
+// IMGUI_API ImGuiTableSettings *TableSettingsFindByID(ImGuiID id);
 
 // // Tab Bars
 // IMGUI_API bool BeginTabBarEx(ImGuiTabBar *tab_bar, const ImRect &bb, ImGuiTabBarFlags flags);
@@ -495,7 +498,7 @@ inline void RenderBullet(ImVec2 pos)
 #endif
 
 // Widgets
-IMGUI_API void TextEx(const char *text, const char *text_end = NULL, ImGuiTextFlags flags = 0);
+// IMGUI_API void TextEx(const char *text, const char *text_end = NULL, ImGuiTextFlags flags = 0);
 // IMGUI_API bool          ButtonEx(const char* label, const ImVec2& size_arg = ImVec2(0, 0), ImGuiButtonFlags flags =
 // 0); IMGUI_API bool          CloseButton(ImGuiID id, const ImVec2& pos); IMGUI_API bool CollapseButton(ImGuiID id,
 // const ImVec2& pos); IMGUI_API bool          ArrowButtonEx(const char* str_id, ImGuiDir dir, ImVec2 size_arg,
@@ -529,11 +532,12 @@ IMGUI_API bool SliderBehavior(const ImRect &bb, ImGuiID id, ImGuiDataType data_t
 IMGUI_API bool SplitterBehavior(const ImRect &bb, ImGuiID id, ImGuiAxis axis, float *size1, float *size2,
                                 float min_size1, float min_size2, float hover_extend = 0.0f,
                                 float hover_visibility_delay = 0.0f);
-IMGUI_API bool TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char *label, const char *label_end = NULL);
-IMGUI_API bool TreeNodeBehaviorIsOpen(
-    ImGuiID id,
-    ImGuiTreeNodeFlags flags = 0); // Consume previous SetNextItemOpen() data, if any. May return true when logging
-IMGUI_API void TreePushOverrideID(ImGuiID id);
+
+// IMGUI_API bool TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char *label, const char *label_end = NULL);
+// IMGUI_API bool TreeNodeBehaviorIsOpen(
+//     ImGuiID id,
+//     ImGuiTreeNodeFlags flags = 0); // Consume previous SetNextItemOpen() data, if any. May return true when logging
+// IMGUI_API void TreePushOverrideID(ImGuiID id);
 
 // Template functions are instantiated in imgui_widgets.cpp for a finite number of types.
 // To use them externally (for custom widget) you may need an "extern template" statement in your code in order to link
@@ -567,23 +571,23 @@ IMGUI_API bool DataTypeApplyOpFromText(const char *buf, const char *initial_valu
 IMGUI_API int DataTypeCompare(ImGuiDataType data_type, const void *arg_1, const void *arg_2);
 IMGUI_API bool DataTypeClamp(ImGuiDataType data_type, void *p_data, const void *p_min, const void *p_max);
 
-// InputText
-IMGUI_API bool InputTextEx(const char *label, const char *hint, char *buf, int buf_size, const ImVec2 &size_arg,
-                           ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL, void *user_data = NULL);
-IMGUI_API bool TempInputText(const ImRect &bb, ImGuiID id, const char *label, char *buf, int buf_size,
-                             ImGuiInputTextFlags flags);
-IMGUI_API bool TempInputScalar(const ImRect &bb, ImGuiID id, const char *label, ImGuiDataType data_type, void *p_data,
-                               const char *format, const void *p_clamp_min = NULL, const void *p_clamp_max = NULL);
-inline bool TempInputIsActive(ImGuiID id)
-{
-    ImGuiContext &g = *GImGui;
-    return (g.ActiveId == id && g.TempInputId == id);
-}
-inline ImGuiInputTextState *GetInputTextState(ImGuiID id)
-{
-    ImGuiContext &g = *GImGui;
-    return (g.InputTextState.ID == id) ? &g.InputTextState : NULL;
-} // Get input text state if active
+// // InputText
+// IMGUI_API bool InputTextEx(const char *label, const char *hint, char *buf, int buf_size, const ImVec2 &size_arg,
+//                            ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL, void *user_data = NULL);
+// IMGUI_API bool TempInputText(const ImRect &bb, ImGuiID id, const char *label, char *buf, int buf_size,
+//                              ImGuiInputTextFlags flags);
+// IMGUI_API bool TempInputScalar(const ImRect &bb, ImGuiID id, const char *label, ImGuiDataType data_type, void *p_data,
+//                                const char *format, const void *p_clamp_min = NULL, const void *p_clamp_max = NULL);
+// inline bool TempInputIsActive(ImGuiID id)
+// {
+//     ImGuiContext &g = *GImGui;
+//     return (g.ActiveId == id && g.TempInputId == id);
+// }
+// inline ImGuiInputTextState *GetInputTextState(ImGuiID id)
+// {
+//     ImGuiContext &g = *GImGui;
+//     return (g.InputTextState.ID == id) ? &g.InputTextState : NULL;
+// } // Get input text state if active
 
 // Color
 IMGUI_API void ColorTooltip(const char *text, const float *col, ImGuiColorEditFlags flags);

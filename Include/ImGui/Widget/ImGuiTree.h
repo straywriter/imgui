@@ -39,4 +39,10 @@ IMGUI_API bool CollapsingHeader(
 IMGUI_API void SetNextItemOpen(bool is_open, ImGuiCond cond = 0); // set next TreeNode/CollapsingHeader open state.
 
 
+IMGUI_API bool TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char *label, const char *label_end = NULL);
+IMGUI_API bool TreeNodeBehaviorIsOpen(
+    ImGuiID id,
+    ImGuiTreeNodeFlags flags = 0); // Consume previous SetNextItemOpen() data, if any. May return true when logging
+IMGUI_API void TreePushOverrideID(ImGuiID id);
+
 } // namespace ImGui

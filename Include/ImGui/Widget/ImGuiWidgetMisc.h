@@ -8,6 +8,7 @@ namespace ImGui
 {
 
 IMGUI_API void ProgressBar(float fraction, const ImVec2 &size_arg = ImVec2(-FLT_MIN, 0), const char *overlay = NULL);
+
 IMGUI_API void Bullet(); // draw a small circle + keep the cursor on the same line. advance cursor x position by
                          // GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses
 

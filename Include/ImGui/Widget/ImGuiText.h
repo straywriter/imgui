@@ -8,6 +8,7 @@
 namespace ImGui
 {
 
+IMGUI_API void TextEx(const char *text, const char *text_end = NULL, ImGuiTextFlags flags = 0);
 // Widgets: Text
 IMGUI_API void TextUnformatted(
     const char *text,

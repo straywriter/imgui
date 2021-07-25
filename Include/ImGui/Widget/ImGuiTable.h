@@ -101,62 +101,53 @@ IMGUI_API void SetColumnOffset(int column_index,
 IMGUI_API int GetColumnsCount();
 
 
+// Tables: Internals
+inline ImGuiTable *GetCurrentTable()
+{
+    ImGuiContext &g = *GImGui;
+    return g.CurrentTable;
+}
+IMGUI_API ImGuiTable *TableFindByID(ImGuiID id);
+IMGUI_API bool BeginTableEx(const char *name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0,
+                            const ImVec2 &outer_size = ImVec2(0, 0), float inner_width = 0.0f);
+IMGUI_API void TableBeginInitMemory(ImGuiTable *table, int columns_count);
+IMGUI_API void TableBeginApplyRequests(ImGuiTable *table);
+IMGUI_API void TableSetupDrawChannels(ImGuiTable *table);
+IMGUI_API void TableUpdateLayout(ImGuiTable *table);
+IMGUI_API void TableUpdateBorders(ImGuiTable *table);
+IMGUI_API void TableUpdateColumnsWeightFromWidth(ImGuiTable *table);
+IMGUI_API void TableDrawBorders(ImGuiTable *table);
+IMGUI_API void TableDrawContextMenu(ImGuiTable *table);
+IMGUI_API void TableMergeDrawChannels(ImGuiTable *table);
+IMGUI_API void TableSortSpecsSanitize(ImGuiTable *table);
+IMGUI_API void TableSortSpecsBuild(ImGuiTable *table);
+IMGUI_API ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn *column);
+IMGUI_API void TableFixColumnSortDirection(ImGuiTable *table, ImGuiTableColumn *column);
+IMGUI_API float TableGetColumnWidthAuto(ImGuiTable *table, ImGuiTableColumn *column);
+IMGUI_API void TableBeginRow(ImGuiTable *table);
+IMGUI_API void TableEndRow(ImGuiTable *table);
+IMGUI_API void TableBeginCell(ImGuiTable *table, int column_n);
+IMGUI_API void TableEndCell(ImGuiTable *table);
+IMGUI_API ImRect TableGetCellBgRect(const ImGuiTable *table, int column_n);
+IMGUI_API const char *TableGetColumnName(const ImGuiTable *table, int column_n);
+IMGUI_API ImGuiID TableGetColumnResizeID(const ImGuiTable *table, int column_n, int instance_no = 0);
+IMGUI_API float TableGetMaxColumnWidth(const ImGuiTable *table, int column_n);
+IMGUI_API void TableSetColumnWidthAutoSingle(ImGuiTable *table, int column_n);
+IMGUI_API void TableSetColumnWidthAutoAll(ImGuiTable *table);
+IMGUI_API void TableRemove(ImGuiTable *table);
+IMGUI_API void TableGcCompactTransientBuffers(ImGuiTable *table);
+IMGUI_API void TableGcCompactTransientBuffers(ImGuiTableTempData *table);
+IMGUI_API void TableGcCompactSettings();
 
-//-----------------------------------------------------------------------------
-// [SECTION] Columns support
-//-----------------------------------------------------------------------------
+// Tables: Settings
+IMGUI_API void TableLoadSettings(ImGuiTable *table);
+IMGUI_API void TableSaveSettings(ImGuiTable *table);
+IMGUI_API void TableResetSettings(ImGuiTable *table);
+IMGUI_API ImGuiTableSettings *TableGetBoundSettings(ImGuiTable *table);
+IMGUI_API void TableSettingsInstallHandler(ImGuiContext *context);
+IMGUI_API ImGuiTableSettings *TableSettingsCreate(ImGuiID id, int columns_count);
+IMGUI_API ImGuiTableSettings *TableSettingsFindByID(ImGuiID id);
 
-// Flags for internal's BeginColumns(). Prefix using BeginTable() nowadays!
-// enum ImGuiOldColumnFlags_
-// {
-//     ImGuiOldColumnFlags_None                    = 0,
-//     ImGuiOldColumnFlags_NoBorder                = 1 << 0,   // Disable column dividers
-//     ImGuiOldColumnFlags_NoResize                = 1 << 1,   // Disable resizing columns when clicking on the dividers
-//     ImGuiOldColumnFlags_NoPreserveWidths        = 1 << 2,   // Disable column width preservation when adjusting columns
-//     ImGuiOldColumnFlags_NoForceWithinWindow     = 1 << 3,   // Disable forcing columns to fit within window
-//     ImGuiOldColumnFlags_GrowParentContentsSize  = 1 << 4    // (WIP) Restore pre-1.51 behavior of extending the parent window contents size but _without affecting the columns width at all_. Will eventually remove.
-
-//     // Obsolete names (will be removed)
-// #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-//     , ImGuiColumnsFlags_None                    = ImGuiOldColumnFlags_None,
-//     ImGuiColumnsFlags_NoBorder                  = ImGuiOldColumnFlags_NoBorder,
-//     ImGuiColumnsFlags_NoResize                  = ImGuiOldColumnFlags_NoResize,
-//     ImGuiColumnsFlags_NoPreserveWidths          = ImGuiOldColumnFlags_NoPreserveWidths,
-//     ImGuiColumnsFlags_NoForceWithinWindow       = ImGuiOldColumnFlags_NoForceWithinWindow,
-//     ImGuiColumnsFlags_GrowParentContentsSize    = ImGuiOldColumnFlags_GrowParentContentsSize
-// #endif
-// };
-
-// struct ImGuiOldColumnData
-// {
-//     float               OffsetNorm;         // Column start offset, normalized 0.0 (far left) -> 1.0 (far right)
-//     float               OffsetNormBeforeResize;
-//     ImGuiOldColumnFlags Flags;              // Not exposed
-//     ImRect              ClipRect;
-
-//     ImGuiOldColumnData() { memset(this, 0, sizeof(*this)); }
-// };
-
-// struct ImGuiOldColumns
-// {
-//     ImGuiID             ID;
-//     ImGuiOldColumnFlags Flags;
-//     bool                IsFirstFrame;
-//     bool                IsBeingResized;
-//     int                 Current;
-//     int                 Count;
-//     float               OffMinX, OffMaxX;       // Offsets from HostWorkRect.Min.x
-//     float               LineMinY, LineMaxY;
-//     float               HostCursorPosY;         // Backup of CursorPos at the time of BeginColumns()
-//     float               HostCursorMaxPosX;      // Backup of CursorMaxPos at the time of BeginColumns()
-//     ImRect              HostInitialClipRect;    // Backup of ClipRect at the time of BeginColumns()
-//     ImRect              HostBackupClipRect;     // Backup of ClipRect during PushColumnsBackground()/PopColumnsBackground()
-//     ImRect              HostBackupParentWorkRect;//Backup of WorkRect at the time of BeginColumns()
-//     ImVector<ImGuiOldColumnData> Columns;
-//     ImDrawListSplitter  Splitter;
-
-//     ImGuiOldColumns()   { memset(this, 0, sizeof(*this)); }
-// };
 
 
 } // namespace ImGui
