@@ -24,5 +24,9 @@ IMGUI_API void SetColorEditOptions(
     ImGuiColorEditFlags flags); // initialize current options (generally on application startup) if you want to select a
                                 // default format, picker type, etc. User will be able to change many settings, unless
                                 // you pass the _NoOptions flag to your calls.
+// Color
+IMGUI_API void ColorTooltip(const char *text, const float *col, ImGuiColorEditFlags flags);
+IMGUI_API void ColorEditOptionsPopup(const float *col, ImGuiColorEditFlags flags);
+IMGUI_API void ColorPickerOptionsPopup(const float *ref_col, ImGuiColorEditFlags flags);
 
 } // namespace ImGui

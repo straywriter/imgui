@@ -662,3 +662,147 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
 
     return value_changed;
 }
+
+
+// Initialize/override default color options
+void ImGui::SetColorEditOptions(ImGuiColorEditFlags flags)
+{
+    ImGuiContext& g = *GImGui;
+    if ((flags & ImGuiColorEditFlags__DisplayMask) == 0)
+        flags |= ImGuiColorEditFlags__OptionsDefault & ImGuiColorEditFlags__DisplayMask;
+    if ((flags & ImGuiColorEditFlags__DataTypeMask) == 0)
+        flags |= ImGuiColorEditFlags__OptionsDefault & ImGuiColorEditFlags__DataTypeMask;
+    if ((flags & ImGuiColorEditFlags__PickerMask) == 0)
+        flags |= ImGuiColorEditFlags__OptionsDefault & ImGuiColorEditFlags__PickerMask;
+    if ((flags & ImGuiColorEditFlags__InputMask) == 0)
+        flags |= ImGuiColorEditFlags__OptionsDefault & ImGuiColorEditFlags__InputMask;
+    IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags__DisplayMask));    // Check only 1 option is selected
+    IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags__DataTypeMask));   // Check only 1 option is selected
+    IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags__PickerMask));     // Check only 1 option is selected
+    IM_ASSERT(ImIsPowerOfTwo(flags & ImGuiColorEditFlags__InputMask));      // Check only 1 option is selected
+    g.ColorEditOptions = flags;
+}
+
+// Note: only access 3 floats if ImGuiColorEditFlags_NoAlpha flag is set.
+void ImGui::ColorTooltip(const char* text, const float* col, ImGuiColorEditFlags flags)
+{
+    ImGuiContext& g = *GImGui;
+
+    BeginTooltipEx(0, ImGuiTooltipFlags_OverridePreviousTooltip);
+    const char* text_end = text ? FindRenderedTextEnd(text, NULL) : text;
+    if (text_end > text)
+    {
+        TextEx(text, text_end);
+        Separator();
+    }
+
+    ImVec2 sz(g.FontSize * 3 + g.Style.FramePadding.y * 2, g.FontSize * 3 + g.Style.FramePadding.y * 2);
+    ImVec4 cf(col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
+    int cr = IM_F32_TO_INT8_SAT(col[0]), cg = IM_F32_TO_INT8_SAT(col[1]), cb = IM_F32_TO_INT8_SAT(col[2]), ca = (flags & ImGuiColorEditFlags_NoAlpha) ? 255 : IM_F32_TO_INT8_SAT(col[3]);
+    ColorButton("##preview", cf, (flags & (ImGuiColorEditFlags__InputMask | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf)) | ImGuiColorEditFlags_NoTooltip, sz);
+    SameLine();
+    if ((flags & ImGuiColorEditFlags_InputRGB) || !(flags & ImGuiColorEditFlags__InputMask))
+    {
+        if (flags & ImGuiColorEditFlags_NoAlpha)
+            Text("#%02X%02X%02X\nR: %d, G: %d, B: %d\n(%.3f, %.3f, %.3f)", cr, cg, cb, cr, cg, cb, col[0], col[1], col[2]);
+        else
+            Text("#%02X%02X%02X%02X\nR:%d, G:%d, B:%d, A:%d\n(%.3f, %.3f, %.3f, %.3f)", cr, cg, cb, ca, cr, cg, cb, ca, col[0], col[1], col[2], col[3]);
+    }
+    else if (flags & ImGuiColorEditFlags_InputHSV)
+    {
+        if (flags & ImGuiColorEditFlags_NoAlpha)
+            Text("H: %.3f, S: %.3f, V: %.3f", col[0], col[1], col[2]);
+        else
+            Text("H: %.3f, S: %.3f, V: %.3f, A: %.3f", col[0], col[1], col[2], col[3]);
+    }
+    EndTooltip();
+}
+
+void ImGui::ColorEditOptionsPopup(const float* col, ImGuiColorEditFlags flags)
+{
+    bool allow_opt_inputs = !(flags & ImGuiColorEditFlags__DisplayMask);
+    bool allow_opt_datatype = !(flags & ImGuiColorEditFlags__DataTypeMask);
+    if ((!allow_opt_inputs && !allow_opt_datatype) || !BeginPopup("context"))
+        return;
+    ImGuiContext& g = *GImGui;
+    ImGuiColorEditFlags opts = g.ColorEditOptions;
+    if (allow_opt_inputs)
+    {
+        if (RadioButton("RGB", (opts & ImGuiColorEditFlags_DisplayRGB) != 0)) opts = (opts & ~ImGuiColorEditFlags__DisplayMask) | ImGuiColorEditFlags_DisplayRGB;
+        if (RadioButton("HSV", (opts & ImGuiColorEditFlags_DisplayHSV) != 0)) opts = (opts & ~ImGuiColorEditFlags__DisplayMask) | ImGuiColorEditFlags_DisplayHSV;
+        if (RadioButton("Hex", (opts & ImGuiColorEditFlags_DisplayHex) != 0)) opts = (opts & ~ImGuiColorEditFlags__DisplayMask) | ImGuiColorEditFlags_DisplayHex;
+    }
+    if (allow_opt_datatype)
+    {
+        if (allow_opt_inputs) Separator();
+        if (RadioButton("0..255",     (opts & ImGuiColorEditFlags_Uint8) != 0)) opts = (opts & ~ImGuiColorEditFlags__DataTypeMask) | ImGuiColorEditFlags_Uint8;
+        if (RadioButton("0.00..1.00", (opts & ImGuiColorEditFlags_Float) != 0)) opts = (opts & ~ImGuiColorEditFlags__DataTypeMask) | ImGuiColorEditFlags_Float;
+    }
+
+    if (allow_opt_inputs || allow_opt_datatype)
+        Separator();
+    if (Button("Copy as..", ImVec2(-1, 0)))
+        OpenPopup("Copy");
+    if (BeginPopup("Copy"))
+    {
+        int cr = IM_F32_TO_INT8_SAT(col[0]), cg = IM_F32_TO_INT8_SAT(col[1]), cb = IM_F32_TO_INT8_SAT(col[2]), ca = (flags & ImGuiColorEditFlags_NoAlpha) ? 255 : IM_F32_TO_INT8_SAT(col[3]);
+        char buf[64];
+        ImFormatString(buf, IM_ARRAYSIZE(buf), "(%.3ff, %.3ff, %.3ff, %.3ff)", col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
+        if (Selectable(buf))
+            SetClipboardText(buf);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), "(%d,%d,%d,%d)", cr, cg, cb, ca);
+        if (Selectable(buf))
+            SetClipboardText(buf);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", cr, cg, cb);
+        if (Selectable(buf))
+            SetClipboardText(buf);
+        if (!(flags & ImGuiColorEditFlags_NoAlpha))
+        {
+            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", cr, cg, cb, ca);
+            if (Selectable(buf))
+                SetClipboardText(buf);
+        }
+        EndPopup();
+    }
+
+    g.ColorEditOptions = opts;
+    EndPopup();
+}
+
+void ImGui::ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags flags)
+{
+    bool allow_opt_picker = !(flags & ImGuiColorEditFlags__PickerMask);
+    bool allow_opt_alpha_bar = !(flags & ImGuiColorEditFlags_NoAlpha) && !(flags & ImGuiColorEditFlags_AlphaBar);
+    if ((!allow_opt_picker && !allow_opt_alpha_bar) || !BeginPopup("context"))
+        return;
+    ImGuiContext& g = *GImGui;
+    if (allow_opt_picker)
+    {
+        ImVec2 picker_size(g.FontSize * 8, ImMax(g.FontSize * 8 - (GetFrameHeight() + g.Style.ItemInnerSpacing.x), 1.0f)); // FIXME: Picker size copied from main picker function
+        PushItemWidth(picker_size.x);
+        for (int picker_type = 0; picker_type < 2; picker_type++)
+        {
+            // Draw small/thumbnail version of each picker type (over an invisible button for selection)
+            if (picker_type > 0) Separator();
+            PushID(picker_type);
+            ImGuiColorEditFlags picker_flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoSidePreview | (flags & ImGuiColorEditFlags_NoAlpha);
+            if (picker_type == 0) picker_flags |= ImGuiColorEditFlags_PickerHueBar;
+            if (picker_type == 1) picker_flags |= ImGuiColorEditFlags_PickerHueWheel;
+            ImVec2 backup_pos = GetCursorScreenPos();
+            if (Selectable("##selectable", false, 0, picker_size)) // By default, Selectable() is closing popup
+                g.ColorEditOptions = (g.ColorEditOptions & ~ImGuiColorEditFlags__PickerMask) | (picker_flags & ImGuiColorEditFlags__PickerMask);
+            SetCursorScreenPos(backup_pos);
+            ImVec4 previewing_ref_col;
+            memcpy(&previewing_ref_col, ref_col, sizeof(float) * ((picker_flags & ImGuiColorEditFlags_NoAlpha) ? 3 : 4));
+            ColorPicker4("##previewing_picker", &previewing_ref_col.x, picker_flags);
+            PopID();
+        }
+        PopItemWidth();
+    }
+    if (allow_opt_alpha_bar)
+    {
+        if (allow_opt_picker) Separator();
+        CheckboxFlags("Alpha Bar", &g.ColorEditOptions, ImGuiColorEditFlags_AlphaBar);
+    }
+    EndPopup();
+}

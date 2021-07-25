@@ -289,7 +289,6 @@ void ImGui::SetNextWindowPos(const ImVec2 &pos, ImGuiCond cond, const ImVec2 &pi
 }
 
 
-
 ImGuiID ImGui::GetWindowScrollbarID(ImGuiWindow* window, ImGuiAxis axis)
 {
     return window->GetIDNoKeepAlive(axis == ImGuiAxis_X ? "#SCROLLX" : "#SCROLLY");

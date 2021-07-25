@@ -3,7 +3,6 @@
 #include <ImGui/ImGuiInternal.h>
 
 
-
 bool ImGui::Checkbox(const char* label, bool* v)
 {
     ImGuiWindow* window = GetCurrentWindow();

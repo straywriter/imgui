@@ -244,23 +244,3 @@ template<typename T> void IM_DELETE(T* p)   { if (p) { p->~T(); ImGui::MemFree(p
 #endif
 #endif // #ifndef IM_DEBUG_BREAK
 
-
-// //-------------------------------------------------------------------------
-// // [SECTION] STB libraries includes
-// //-------------------------------------------------------------------------
-
-// struct ImGuiInputTextState;         // Internal state of the currently focused/edited text input box
-
-// namespace ImStb
-// {
-
-// #undef STB_TEXTEDIT_STRING
-// #undef STB_TEXTEDIT_CHARTYPE
-// #define STB_TEXTEDIT_STRING             ImGuiInputTextState
-// #define STB_TEXTEDIT_CHARTYPE           ImWchar
-// #define STB_TEXTEDIT_GETWIDTH_NEWLINE   (-1.0f)
-// #define STB_TEXTEDIT_UNDOSTATECOUNT     99
-// #define STB_TEXTEDIT_UNDOCHARCOUNT      999
-// #include "imstb_textedit.h"
-
-// } // namespace ImStb

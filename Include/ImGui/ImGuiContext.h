@@ -30,6 +30,7 @@ struct ImGuiContextHook
 // [SECTION] ImGuiContext (main imgui context)
 //-----------------------------------------------------------------------------
 
+
 struct ImGuiContext
 {
     bool                    Initialized;

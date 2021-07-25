@@ -662,8 +662,8 @@ struct IMGUI_API ImGuiMenuColumns
     float       CalcExtraSpace(float avail_w) const;
 };
 
-// Internal state of the currently focused/edited text input box
-// For a given item ID, access with ImGui::GetInputTextState()
+// // Internal state of the currently focused/edited text input box
+// // For a given item ID, access with ImGui::GetInputTextState()
 struct IMGUI_API ImGuiInputTextState
 {
     ImGuiID                 ID;                     // widget id owning the text state
