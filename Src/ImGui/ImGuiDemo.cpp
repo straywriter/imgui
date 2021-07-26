@@ -174,6 +174,8 @@ Index of this file:
 #if !defined(IMGUI_DISABLE_DEMO_WINDOWS)
 
 // Forward Declarations
+static void ShowExampleAppDockSpace(bool* p_open);
+
 static void ShowExampleAppDocuments(bool* p_open);
 static void ShowExampleAppMainMenuBar();
 static void ShowExampleAppConsole(bool* p_open);
@@ -8241,6 +8243,8 @@ void ImGui::ShowMetricsWindow(bool *p_open)
 
     End();
 }
+
+
 
 
 // End of Demo code

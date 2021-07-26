@@ -39,3 +39,5 @@
 #include <ImGui/Widget/ImGuiDataPlotting.h>
 
 #include <ImGui/Widget/ImGuiScrollbar.h>
+
+#include <ImGui/Widget/ImGuizmo.h>

@@ -16,7 +16,7 @@ add_library(imgui ${ImGuiHeaderFile} ${ImGuiSourceFile})
 target_include_directories(
   imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include
                ${CMAKE_CURRENT_SOURCE_DIR}/Include/ImGui/)
+target_link_libraries(imgui PUBLIC stb)
 
-add_executable(Example Example/Example.cpp Example/imgui_impl_opengl3.cpp
-                       Example/imgui_impl_glfw.cpp)
-target_link_libraries(Example imgui glad glfw)
+
+add_subdirectory(Example)
