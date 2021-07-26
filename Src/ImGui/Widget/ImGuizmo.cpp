@@ -31,6 +31,11 @@
 // #include "imgui_internal.h"
 
 #include <ImGui/ImGui.h>
+
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif
+
 #include <ImGui/ImGuiInternal.h>
 
 
@@ -932,6 +937,8 @@ namespace ImGuizmo
       ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
       ImGui::Begin("gizmo", NULL, flags);
+            // ImGui::Begin("gizmo", NULL);
+
       gContext.mDrawList = ImGui::GetWindowDrawList();
       ImGui::End();
       ImGui::PopStyleVar();

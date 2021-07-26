@@ -220,14 +220,17 @@ void EditTransform(float *cameraView, float *cameraProjection, float *matrix, bo
     }
 
     ImGuiIO &io = ImGui::GetIO();
-    float viewManipulateRight = io.DisplaySize.x;
-    float viewManipulateTop = 0;
+      const ImGuiViewport* viewport = ImGui::GetMainViewport();
+    float viewManipulateRight = viewport->WorkPos.x+viewport->WorkSize.x;
+    float viewManipulateTop =  viewport->WorkPos.y;
     if (useWindow)
     {
-        ImGui::SetNextWindowSize(ImVec2(800, 400));
-        ImGui::SetNextWindowPos(ImVec2(400, 20));
+        // ImGui::SetNextWindowSize(ImVec2(800, 400));
+        // ImGui::SetNextWindowPos(ImVec2(400, 20));
         ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImVec4)ImColor(0.35f, 0.3f, 0.3f));
-        ImGui::Begin("Gizmo", 0, ImGuiWindowFlags_NoMove);
+        // ImGui::Begin("Gizmo", 0, ImGuiWindowFlags_NoMove);
+        ImGui::Begin("Gizmo", 0);
+
         ImGuizmo::SetDrawlist();
         float windowWidth = (float)ImGui::GetWindowWidth();
         float windowHeight = (float)ImGui::GetWindowHeight();
@@ -237,7 +240,8 @@ void EditTransform(float *cameraView, float *cameraProjection, float *matrix, bo
     }
     else
     {
-        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+        ImGuizmo::SetRect(viewport->WorkPos.x, viewport->WorkPos.y,viewport->WorkSize.x, viewport->WorkSize.y);
+
     }
 
     ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
