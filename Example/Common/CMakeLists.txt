@@ -1,0 +1,5 @@
+file(GLOB SourceFile ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+add_library(ExampleCommon)
+target_sources(ExampleCommon PUBLIC ${SourceFile})
+target_include_directories(ExampleCommon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(ExampleCommon PUBLIC imgui glfw glad)

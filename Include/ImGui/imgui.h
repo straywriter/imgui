@@ -47,6 +47,7 @@ Index of this file:
 #include <ImGui/ImGuiConfig.h>
 #endif
 
+
 #ifndef IMGUI_DISABLE
 
 //-----------------------------------------------------------------------------
@@ -274,6 +275,7 @@ IM_MSVC_RUNTIME_CHECKS_RESTORE
 
 
 #include <ImGui/Widget/ImGuiWidget.h>
+#include <ImGui/Widget/ImGuiIconFont.h>
 
 //-----------------------------------------------------------------------------
 // [SECTION] Dear ImGui end-user API functions
